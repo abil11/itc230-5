@@ -25,8 +25,8 @@ var music = require('./lib/music.js');
 app.get('/about', function(req, res) {
   res.render('about', {
       course: music.course,
-      teacher: music.teacher,
-      code: music.code});
+      performer: music.performer,
+      genre: music.genre});
 });
 
 //get object
