@@ -1,0 +1,17 @@
+<html>
+	<body>
+<h1>Musics type</h1>
+<p>Search genre</p><br>
+<form method="POST" action="/get">
+    <input type="text" name="type" placeholder="search mucis name" required maxlength="100">
+    <button>Search</button>
+</form>
+{{#if musics}}
+<h3>Genres</h3>
+{{/if}}
+
+{{#each musics}}
+    <li><a href="/get?type={{type}}">{{type}}</a></li>
+{{/each}}
+	</body>
+</html>
