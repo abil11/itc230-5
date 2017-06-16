@@ -1,0 +1,20 @@
+
+<html>
+    <body>
+        <a href="/">Home</a>
+{{#if result}}
+    <h2>{{type}} details</h2>
+    <li><em>Type: </em> {{result.type}}</li>
+    <li><em>BandName: </em> {{result.band}}</li>
+    <li><em>Singer: </em> {{result.singer}}</li>
+    <li><em>Label: </em> {{result.label}}</li>
+    <li><em>Bandmembers: </em> {{result.bandmembers}}</li>
+    <p>
+    <a href="/delete?type={{type}}">Delete</a>
+    </p>
+
+{{else}}
+        <h2>{{type}} cannot be found</h2>
+{{/if}}
+    </body>
+</html>
