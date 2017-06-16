@@ -1,1 +1,208 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Music</title>
 
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react-dom.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+
+</head>
+<body>
+
+    <div class="container">
+      <div id="root">  </div>
+    </div>
+
+<!-- NOTE: script type declaration to support JSX -->
+<script type="text/babel">
+    // define app container Component
+    class MusicApp extends React.Component{
+      constructor(props){
+        // Pass props to parent class
+        super(props);
+        // Set initial state w/ hard-coded data
+        this.state = {
+          data:{{{music}}} ,
+          filter: "", // search term
+          curItem: {} // current selected item
+        };
+        // bind App context to functions for reference in sub components
+        this.onSearchChange = this.onSearchChange.bind(this);
+        this.onSave = this.onSave.bind(this);
+        this.onDelete = this.onDelete.bind(this);
+      }
+      // search handler
+      onSearchChange(entry) {
+        // set search term. react will handle component updates
+        this.setState({filter: entry });
+      }
+      // show item details
+      showDetails(event){
+        // event.target is list item clicked
+        let editItem = this.state.data.find((item) => {
+          return item._id == event.target.id;
+        });
+        this.setState({curItem: editItem});
+      }
+      // Handle item save
+      onSave(newItem) {
+
+        fetch("/api/add/", {
+          method: "POST",
+        	headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newItem)
+        }).then(res => res.json())
+        	.then((json) => {
+          let newData;
+          if (!newItem._id) { // add new item to array
+            newData = this.state.data;
+            newItem._id = json._id;
+            newData.push(newItem);
+          } else { // update existing item
+            newData = this.state.data.map((item) => {
+              if (item._id === newItem._id) {
+                item = newItem;
+              }
+              return item;
+            });
+          }
+
+          // Update state with new array
+          this.setState({data: newData});
+        });
+      }
+
+      // Handle item delete
+      onDelete(id){
+        // Filter all items except the one to be removed
+        title = title.toLowerCase();
+        fetch("api/delete/" + id).then((Response) => {
+          return Response.json();
+        })
+        const remainder = this.state.data.filter((item) => {
+          return item._id !== id;
+        });
+        // Update state with new array
+        this.setState({data: remainder});
+        this.setState({curItem: {}});
+      }
+
+      render() {
+        // Render JSX
+        return <div>
+          <Title/>
+          <SearchForm entry={this.state.entry} onEntryChange={this.onSearchChange} />
+          <span>
+            <ItemList
+              items={this.state.data}
+              filter={this.state.filter}
+              show={this.showDetails.bind(this)}
+            />
+          </span><span><ItemDetails item={this.state.curItem} save={this.onSave} delete={this.onDelete} /></span>
+          </div>;
+      }
+    }
+
+    // UI elements
+    const Title = () => {
+        return (
+        <div>
+           <div>
+              <h1>Music</h1>
+           </div>
+        </div>
+        );
+    }
+    class SearchForm extends React.Component {
+      constructor(props) {
+        super(props);
+        this.handleChange = this.handleChange.bind(this);
+      }
+      handleChange (event) {
+        this.props.onEntryChange(event.target.value);
+      };
+      render() {
+        return (
+          <div>
+            <input
+              type="text" placeholder="Enter Music"
+              value={this.props.entry}
+              onChange={this.handleChange}
+            />
+          </div>
+        );
+      }
+    };
+    const ItemList = ({items, filter, show}) => {
+      // return items that match search entry field, or all items if no entry
+      const itemNodes = items.map((item) => {
+        if (!filter || item.type.includes(filter)) {
+          return <li id={item._id} key={item._id} onClick={show}>{item.type}</li>
+        }
+      });
+      return <ul>{itemNodes}</ul>;
+    }
+     class ItemDetails extends React.Component {
+      constructor(props) {
+        super(props);
+        // state values must not be 'undefined', to avoid 'uncontrolled' form warning
+        this.state = {
+            _id: this.props.item._id || "",
+           type: this.props.item.type || "",
+           band: this.props.item.band || "",
+           singer: this.props.item.singer || "",
+           label: this.props.item.label|| "",
+           bandmembers: this.props.item.bandmembers || ""
+         };
+         this.handleChange = this.handleChange.bind(this);
+         this.handleSave = this.handleSave.bind(this);
+         this.handleDelete = this.handleDelete.bind(this);
+         this.handleReset = this.handleReset.bind(this);
+       }
+       componentWillReceiveProps(nextProps) {
+         this.setState({
+           _id: nextProps.item._id || "",
+           type: nextProps.item.type|| "",
+           band: nextProps.item.band || "",
+           singer: nextProps.item.singer || "",
+           label: nextProps.item.label || "",
+           bandmembers: nextProps.item.bandmembers || ""
+         });
+       }
+      handleChange (event) {
+        this.setState({[event.target.type]: event.target.value});
+      };
+      handleSave(event) {
+        // pass local state to app-level for saving to data array
+        if (this.state.name) { // entries must have at least a name
+          this.props.save({_id: this.state._id, type: this.state.type, band: this.state.band, singer: this.state.singer, label: this.state.label , bandmembers: this.state.bandmembers});
+        }
+      };
+      handleDelete (event) {
+        this.props.delete(this.state._id);
+      };
+      handleReset (event) {
+        this.setState({_id:"", type:"", band:"", singer:"", label:"", bandmembers:""});
+      };
+      render() {
+          return (
+          <div>
+            <h3>Details:</h3>
+              <input type="hidden" name="_id" value={this.state._id} onChange={this.handleChange} readOnly/>
+              <input type="text" name="type" placeholder="type" value={this.state.type} onChange={this.handleChange} />
+              <input type="text" name="band" placeholder="band" value={this.state.band} onChange={this.handleChange} />
+              <input type="text" name="singer" placeholder="singer" value={this.state.singer} onChange={this.handleChange} />
+              <input type="text" name="label" placeholder="label" value={this.state.label} onChange={this.handleChange} />
+              <input type="number" name="bandmembers" placeholder="bandmembers" value={this.state.bandmembers} onChange={this.handleChange} />
+              <p/>
+              <button onClick={this.handleSave}>Save</button>  <button onClick={this.handleReset}>Reset</button> <button onClick={this.handleDelete} >Delete</button>
+          </div>
+          );
+      }
+    }
+    ReactDOM.render(<MusicApp/>, document.getElementById('root'));
+</script>
+</body>
+</html>
