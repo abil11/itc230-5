@@ -1,1 +1,11 @@
-
+<html>
+    <body>
+        <a href ="/">Home page (MUSIC)</a>
+        {{#if result.MusicAction}}
+        <h2>{{name}} Music Added</h2>
+        Total: {{result.Total}}
+        {{else}}
+        <h2>{{name}} added.</h2>
+        {{/if}}
+    </body>
+</html>
