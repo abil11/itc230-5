@@ -1,1 +1,20 @@
+<html>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<body>
+    <h1> Welcome to Music Page!</h1>
+  <h2>Musics</h2>
 
+<form method="POST" action="/get">
+    <input type="text" name="name" placeholder="Enter name Here" required maxlength="200">
+    <button>Search</button>
+</form>
+
+<form method="POST" action="/add">
+    <input type="text" name="name" placeholder="Enter name" required maxlength="200">
+    <input type="text" name= "year" placeholder="Enter year" required maxlength="200">
+    <input type="text" name= "band" placeholder="Enter band" required maxlength="200">
+    <button>Add</button>
+</form>
+	 <footer>Copyright© 2017 by Abil All Rights Reserved Seattle,Wa</footer>
+</body>
+</html>
