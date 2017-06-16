@@ -7,8 +7,6 @@ let musics = [
 
     ];
 
-    //console.log(records);
-
 
     exports.get = (name) => {
         return musics.find((item) => {
