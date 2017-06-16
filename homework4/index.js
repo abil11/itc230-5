@@ -14,7 +14,6 @@ let handlebars =  require("express-handlebars");
 app.engine('.html', handlebars({extname: '.html'}));
 app.set("view engine", '.html');
 
-//app.get is the method to add routes app.VERB
 app.get('/', function(req, res){
   res.type('text/html');
   res.sendFile(__dirname + '/public/home.html');
