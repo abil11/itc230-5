@@ -1,0 +1,20 @@
+<!doctype>
+<html>
+<head>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react-dom.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+
+    <title></title>
+</head>
+<body>
+    <hr>
+    {{{body}}}
+    <hr>
+    <div class="nav">
+    {{! only show home link if on detail page }}
+    {{#if musics}}{{else}}<a href="/">Home</a> |{{/if}}
+
+    <footer>&copy; Abil <a href="/about">About</a> </footer>
+</body>
+</html>
